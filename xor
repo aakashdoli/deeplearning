@@ -1,0 +1,32 @@
+import numpy as np
+
+def unitStep(v):
+    return 1 if v >= 0 else 0
+
+def perceptronModel(x, w, b):
+    v = np.dot(w, x) + b
+    return unitStep(v)
+
+# XOR logic using two perceptrons
+def XOR_logicFunction(x):
+    # First layer perceptrons
+    w1 = np.array([1, 1])
+    b1 = -1.5
+    y1 = perceptronModel(x, w1, b1)  # AND
+
+    w2 = np.array([1, 1])
+    b2 = -0.5
+    y2 = perceptronModel(x, w2, b2)  # OR
+
+    # Second layer perceptron
+    w3 = np.array([-1, 1])
+    b3 = -0.5
+    final_x = np.array([y1, y2])
+    finalOutput = perceptronModel(final_x, w3, b3)  # AND(NOT(y1), y2)
+    
+    return finalOutput
+
+# Testing the XOR gate
+test_cases = [np.array([0, 0]), np.array([0, 1]), np.array([1, 0]), np.array([1, 1])]
+for x in test_cases:
+    print(f"XOR({x[0]}, {x[1]}) = {XOR_logicFunction(x)}")
