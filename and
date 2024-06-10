@@ -1,0 +1,33 @@
+import numpy as np
+
+# Define the input data for the AND gate
+X = np.array([[0, 0],
+              [0, 1],
+              [1, 0],
+              [1, 1]])
+
+# Define the desired output for the AND gate
+d = np.array([0, 0, 0, 1])
+
+# Initialize the weights to zeros
+W = np.zeros(3)
+
+# Learning rate
+lr = 1
+
+# Number of epochs
+epochs = 10
+
+# Training the perceptron
+for _ in range(epochs):
+    for xi, target in zip(X, d):
+        xi = np.insert(xi, 0, 1)  # Add bias term
+        y = 1 if np.dot(W, xi) >= 0 else 0  # Calculate the output
+        W += lr * (target - y) * xi  # Update the weights
+
+# Testing the perceptron
+print("AND Gate:")
+for xi in X:
+    xi = np.insert(xi, 0, 1)  # Add bias term
+    y = 1 if np.dot(W, xi) >= 0 else 0  # Calculate the output
+    print(f"Input: {xi[1:]}, Predicted Output: {y}")
