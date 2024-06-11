@@ -1,0 +1,57 @@
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models, Input
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load MNIST dataset
+(X_train, y_train), (X_test, y_test) = datasets.mnist.load_data()
+
+# Normalize the data
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+
+# Reshape the data
+X_train = X_train.reshape((X_train.shape[0], 28, 28, 1))
+X_test = X_test.reshape((X_test.shape[0], 28, 28, 1))
+
+def plot_sample(X, y, index):
+    plt.figure(figsize=(5, 2))
+    plt.imshow(X[index].reshape(28, 28), cmap='gray')
+    plt.xlabel(f'Label: {y[index]}')
+    plt.show()
+
+# Plot a sample image from the training set
+plot_sample(X_train, y_train, 1)
+
+# Define the classes
+classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# Create the CNN model
+cnn = models.Sequential([
+    Input(shape=(28, 28, 1)),
+    layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu'),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(filters=64, kernel_size=(3, 3), activation='relu'),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(50, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+# Compile the model
+cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model
+cnn.fit(X_train, y_train, epochs=10)
+
+# Predict the classes for the test set
+y_pred = cnn.predict(X_test)
+y_classes = [np.argmax(element) for element in y_pred]
+
+# Flatten the test labels
+y_test = y_test.reshape(-1,)
+
+# Print and plot a sample prediction
+print("Predicted Class:", y_classes[1])
+print("Actual Label:", y_test[1])
+plot_sample(X_test, y_test, 1)
